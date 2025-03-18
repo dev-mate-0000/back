@@ -26,20 +26,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         CustomOAuthUser userDetails = (CustomOAuthUser) authentication.getPrincipal();
 
-        String token = jwtUtil.createJwt(userDetails.getId(), userDetails.getName(), jwtUtil.getRefreshExpiredMs());
-        Cookie cookie = createCookie(jwtUtil.getRefreshTokenName(), token, jwtUtil.getRefreshExpiredMs());
-        response.addCookie(cookie);
+        String refreshToken = jwtUtil.createJwt(userDetails.getId(), userDetails.getName(), jwtUtil.getRefreshTokenExpiredMs());
+        Cookie refreshCookie = jwtUtil.createCookie(jwtUtil.getRefreshTokenName(), refreshToken, jwtUtil.getRefreshTokenExpiredMs());
+        response.addCookie(refreshCookie);
 
-        String redirectUrl = REDIRECT_URL;
-        response.sendRedirect(redirectUrl);
-    }
+        String accessToken = jwtUtil.createJwt(userDetails.getId(), userDetails.getName(), jwtUtil.getAccessTokenExpiredMs());
+        Cookie accessCookie = jwtUtil.createCookie(jwtUtil.getAccessTokenName(), accessToken, jwtUtil.getAccessTokenExpiredMs());
+        response.addCookie(accessCookie);
 
-    private Cookie createCookie(String key, String value, Long expiredMs) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(expiredMs.intValue());
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
+        response.sendRedirect(REDIRECT_URL);
     }
 }

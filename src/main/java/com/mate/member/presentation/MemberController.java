@@ -5,9 +5,10 @@ import com.mate.member.presentation.dto.MemberResponse;
 import com.mate.security.SecurityUtil;
 import com.mate.security.oauth.CustomOAuthUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/members")
@@ -16,9 +17,18 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/self")
-    public MemberResponse.FindMember findMemberById() {
-        CustomOAuthUser authUser = SecurityUtil.getMemberIdByAuthentication();
-        return memberService.findMemberById(authUser.getId());
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponse.FindMember> findMemberById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(memberService.findMemberById(id));
+    }
+
+    @GetMapping("/suggest")
+    public ResponseEntity<List<MemberResponse.FindMemberSuggest>> suggestMember() {
+        return ResponseEntity.ok().body(memberService.suggestMembers());
+    }
+
+    @GetMapping("/suggest/next")
+    public ResponseEntity<MemberResponse.FindMemberSuggest> suggestNextMember(@RequestParam("page") int page) {
+        return ResponseEntity.ok().body(memberService.suggestNextMember(page));
     }
 }

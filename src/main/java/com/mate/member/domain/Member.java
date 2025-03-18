@@ -29,6 +29,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private OAuthServer oAuthServer;
 
+    @Builder.Default
+    private Long priority = 0L;
+
     private String job;
     private String bio;
 }

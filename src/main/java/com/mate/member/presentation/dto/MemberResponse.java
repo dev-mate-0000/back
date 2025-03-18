@@ -10,6 +10,7 @@ public class MemberResponse {
 
     @Builder
     public record FindMember(
+        Long id,
         String name,
         String githubUrl,
         String job,
@@ -29,11 +30,26 @@ public class MemberResponse {
             ).toList();
 
             return FindMember.builder()
+                    .id(member.getId())
                     .name(member.getName())
                     .githubUrl(member.getGithubUrl())
                     .job(member.getJob())
                     .bio(member.getBio())
                     .languages(rtnLanguages)
+                    .build();
+        }
+    }
+
+    @Builder
+    public record FindMemberSuggest(
+            Long id,
+            String name
+    ) {
+
+        public static FindMemberSuggest toDto(Member member) {
+            return FindMemberSuggest.builder()
+                    .id(member.getId())
+                    .name(member.getName())
                     .build();
         }
     }

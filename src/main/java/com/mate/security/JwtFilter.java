@@ -2,6 +2,7 @@ package com.mate.security;
 
 import com.mate.member.domain.Member;
 import com.mate.security.oauth.CustomOAuthUser;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -24,22 +25,44 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
-        String token = getToken(request);
-        if(token == null) {
+        String accessToken = getAccessToken(request);
+        if(accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if(jwtUtil.isExpired(token)) {
-            // ToDo: 예외 처리.. 해야지..
-            System.out.println("token expired");
-            filterChain.doFilter(request, response);
-            return;
-        }
+        Long id;
+        String name;
 
-        Long id = jwtUtil.getId(token);
-        String name = jwtUtil.getName(token);
+        Claims accessClaims = jwtUtil.getClaims(accessToken);
+
+        if(accessClaims == null) {
+            String refreshToken = getRefreshToken(request);
+            if(refreshToken == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            Claims refreshClaims = jwtUtil.getClaims(refreshToken);
+            if(refreshClaims == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            id = refreshClaims.get("id", Long.class);
+            name = refreshClaims.get("name", String.class);
+
+            String newRefreshToken = jwtUtil.createJwt(id, name, jwtUtil.getRefreshTokenExpiredMs());
+            Cookie newRefreshCookie = jwtUtil.createCookie(jwtUtil.getRefreshTokenName(), newRefreshToken, jwtUtil.getRefreshTokenExpiredMs());
+            response.addCookie(newRefreshCookie);
+
+            String newAccessToken = jwtUtil.createJwt(id, name, jwtUtil.getAccessTokenExpiredMs());
+            Cookie newAccessCookie = jwtUtil.createCookie(jwtUtil.getAccessTokenName(), newAccessToken, jwtUtil.getAccessTokenExpiredMs());
+            response.addCookie(newAccessCookie);
+        } else {
+            id = accessClaims.get("id", Long.class);
+            name = accessClaims.get("name", String.class);
+        }
 
         Member member = Member.builder()
                 .id(id)
@@ -53,10 +76,22 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getToken(HttpServletRequest request) {
+    private String getAccessToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+        if(cookies == null) return null;
         for(Cookie cookie : cookies) {
             if(cookie.getName().equals(jwtUtil.getAccessTokenName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+
+    private String getRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if(cookies == null) return null;
+        for(Cookie cookie : cookies) {
+            if(cookie.getName().equals(jwtUtil.getRefreshTokenName())) {
                 return cookie.getValue();
             }
         }

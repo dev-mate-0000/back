@@ -1,6 +1,9 @@
 package com.mate.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,16 +17,16 @@ import java.util.Date;
 public class JwtUtil {
 
     @Getter
-    private final Long JwtExpiredMs = 24 * 60 * 60L;
+    private final Long accessTokenExpiredMs = 24 * 60 * 60L;
 
     @Getter
-    private final Long RefreshExpiredMs = 30 * 24 * 60 * 60L;
+    private final Long refreshTokenExpiredMs = 30 * 24 * 60 * 60L;
 
     @Getter
-    public final String accessTokenName = "Authorization";
+    private final String accessTokenName = "Authorization";
 
     @Getter
-    public final String refreshTokenName = "Refresh";
+    private final String refreshTokenName = "Refresh";
 
     private final SecretKey secretKey;
 
@@ -32,32 +35,16 @@ public class JwtUtil {
                 Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String getName(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("name", String.class);
-    }
-
-    public Long getId(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .get("id", Long.class);
-    }
-
-    public Boolean isExpired(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getExpiration()
-                .before(new Date());
+    public Claims getClaims(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            return null;
+        }
     }
 
     public String createJwt(Long id, String name, Long expiredMs) {
@@ -69,5 +56,14 @@ public class JwtUtil {
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public Cookie createCookie(String key, String value, Long expiredMs) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(expiredMs.intValue());
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+
+        return cookie;
     }
 }
