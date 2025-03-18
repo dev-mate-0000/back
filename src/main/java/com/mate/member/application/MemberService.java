@@ -5,9 +5,12 @@ import com.mate.member.domain.Language;
 import com.mate.member.domain.LanguageRepository;
 import com.mate.member.domain.Member;
 import com.mate.member.domain.MemberRepository;
+import com.mate.member.presentation.dto.MemberRequest;
 import com.mate.member.presentation.dto.MemberResponse;
+import com.mate.member.presentation.enums.LanguagesEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,5 +39,19 @@ public class MemberService {
         Member member = memberRepository.findSuggestNextMember(page)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
         return MemberResponse.FindMemberSuggest.toDto(member);
+    }
+
+    @Transactional
+    public void patchMember(Long memberId, MemberRequest.PatchMember dto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
+        member.patchMember(dto.job(), dto.bio());
+        dto.language().forEach(languageEnum -> {
+            Language language = Language.builder()
+                    .member(member)
+                    .language(languageEnum)
+                    .build();
+            languageRepository.save(language);
+        });
     }
 }

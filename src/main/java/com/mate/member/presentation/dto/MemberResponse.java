@@ -2,6 +2,7 @@ package com.mate.member.presentation.dto;
 
 import com.mate.member.domain.Language;
 import com.mate.member.domain.Member;
+import com.mate.member.presentation.enums.JobsEnum;
 import lombok.Builder;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class MemberResponse {
         Long id,
         String name,
         String githubUrl,
-        String job,
+        JobsEnum job,
         String bio,
         List<FindMemberLanguageInfo> languages
     ) {
@@ -25,7 +26,7 @@ public class MemberResponse {
         public static FindMember toDto(Member member, List<Language> languages) {
             List<FindMemberLanguageInfo> rtnLanguages = languages.stream().map(language ->
                     FindMemberLanguageInfo.builder()
-                            .language(language.getLanguage())
+                            .language(String.valueOf(language.getLanguage()))
                             .build()
             ).toList();
 

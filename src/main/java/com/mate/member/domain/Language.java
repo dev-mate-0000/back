@@ -1,5 +1,6 @@
 package com.mate.member.domain;
 
+import com.mate.member.presentation.enums.LanguagesEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,8 @@ public class Language {
     private Long id;
 
     @Column(nullable = false)
-    private String language;
+    @Enumerated(EnumType.STRING)
+    private LanguagesEnum language;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

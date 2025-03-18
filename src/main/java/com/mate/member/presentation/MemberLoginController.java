@@ -18,9 +18,4 @@ public class MemberLoginController {
         return ResponseEntity.ok()
                 .body("https://github.com/login/oauth/authorize?client_id=" + GITHUB_CLIENT_ID);
     }
-
-    @GetMapping("/checker")
-    public ResponseEntity<Void> checker() {
-        return ResponseEntity.ok().build();
-    }
 }

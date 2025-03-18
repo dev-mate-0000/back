@@ -1,5 +1,6 @@
 package com.mate.member.domain;
 
+import com.mate.member.presentation.enums.JobsEnum;
 import com.mate.security.oauth.OAuthServer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,20 @@ public class Member {
     @Builder.Default
     private Long priority = 0L;
 
-    private String job;
+    private JobsEnum job;
     private String bio;
+
+    /**
+     * Member Patch Method
+     * @param job
+     * @param bio
+     */
+    public void patchMember(JobsEnum job, String bio) {
+        if(job != null) {
+            this.job = job;
+        }
+        if(bio != null && !bio.isEmpty()) {
+            this.bio = bio;
+        }
+    }
 }

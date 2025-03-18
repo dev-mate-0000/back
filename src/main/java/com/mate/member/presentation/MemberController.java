@@ -1,6 +1,7 @@
 package com.mate.member.presentation;
 
 import com.mate.member.application.MemberService;
+import com.mate.member.presentation.dto.MemberRequest;
 import com.mate.member.presentation.dto.MemberResponse;
 import com.mate.security.SecurityUtil;
 import com.mate.security.oauth.CustomOAuthUser;
@@ -30,5 +31,18 @@ public class MemberController {
     @GetMapping("/suggest/next")
     public ResponseEntity<MemberResponse.FindMemberSuggest> suggestNextMember(@RequestParam("page") int page) {
         return ResponseEntity.ok().body(memberService.suggestNextMember(page));
+    }
+
+    @GetMapping("/self")
+    public ResponseEntity<MemberResponse.FindMember> findMemberByLoggedInUser() {
+        CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication();
+        return ResponseEntity.ok().body(memberService.findMemberById(userInfo.getId()));
+    }
+
+    @PatchMapping("/self")
+    public ResponseEntity<Void> updateMemberByLoggedInUser(@RequestBody MemberRequest.PatchMember dto) {
+        CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication();
+        memberService.patchMember(userInfo.getId(), dto);
+        return ResponseEntity.ok().build();
     }
 }
