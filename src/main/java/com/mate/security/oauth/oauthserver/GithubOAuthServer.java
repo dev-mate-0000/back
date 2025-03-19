@@ -3,7 +3,6 @@ package com.mate.security.oauth.oauthserver;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mate.security.oauth.OAuthServer;
-import com.mate.security.oauth.OAuthUserService;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
