@@ -47,7 +47,7 @@ public class JwtUtil {
         }
     }
 
-    public String createJwt(Long id, String name, Long expiredMs) {
+    public String createJwt(String id, String name, Long expiredMs) {
         return Jwts.builder()
                 .claim("id", id)
                 .claim("name", name)

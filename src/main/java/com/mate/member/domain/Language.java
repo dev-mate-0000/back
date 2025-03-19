@@ -1,11 +1,12 @@
 package com.mate.member.domain;
 
-import com.mate.member.presentation.enums.LanguagesEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -14,12 +15,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Language {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private LanguagesEnum language;
+    private String language;
+
+    @Column(nullable = false)
+    private Integer codeLines;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

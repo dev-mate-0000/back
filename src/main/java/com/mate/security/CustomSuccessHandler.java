@@ -26,11 +26,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         CustomOAuthUser userDetails = (CustomOAuthUser) authentication.getPrincipal();
 
-        String refreshToken = jwtUtil.createJwt(userDetails.getId(), userDetails.getName(), jwtUtil.getRefreshTokenExpiredMs());
+        String refreshToken = jwtUtil.createJwt(userDetails.getId().toString(), userDetails.getName(), jwtUtil.getRefreshTokenExpiredMs());
         Cookie refreshCookie = jwtUtil.createCookie(jwtUtil.getRefreshTokenName(), refreshToken, jwtUtil.getRefreshTokenExpiredMs());
         response.addCookie(refreshCookie);
 
-        String accessToken = jwtUtil.createJwt(userDetails.getId(), userDetails.getName(), jwtUtil.getAccessTokenExpiredMs());
+        String accessToken = jwtUtil.createJwt(userDetails.getId().toString(), userDetails.getName(), jwtUtil.getAccessTokenExpiredMs());
         Cookie accessCookie = jwtUtil.createCookie(jwtUtil.getAccessTokenName(), accessToken, jwtUtil.getAccessTokenExpiredMs());
         response.addCookie(accessCookie);
 

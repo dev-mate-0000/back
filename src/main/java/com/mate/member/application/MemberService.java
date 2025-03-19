@@ -7,12 +7,12 @@ import com.mate.member.domain.Member;
 import com.mate.member.domain.MemberRepository;
 import com.mate.member.presentation.dto.MemberRequest;
 import com.mate.member.presentation.dto.MemberResponse;
-import com.mate.member.presentation.enums.LanguagesEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class MemberService {
 
     private final String NOT_FOUND_MEMBER_EXCEPTION = "사용자 정보를 찾을 수 없습니다.";
 
-    public MemberResponse.FindMember findMemberById(Long id) {
+    public MemberResponse.FindMember findMemberById(UUID id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
         List<Language> languages = languageRepository.findByMemberId(member.getId());
@@ -42,16 +42,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void patchMember(Long memberId, MemberRequest.PatchMember dto) {
+    public void patchMember(UUID memberId, MemberRequest.PatchMember dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
         member.patchMember(dto.job(), dto.bio());
-        dto.language().forEach(languageEnum -> {
-            Language language = Language.builder()
-                    .member(member)
-                    .language(languageEnum)
-                    .build();
-            languageRepository.save(language);
-        });
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -31,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        Long id;
+        UUID id;
         String name;
 
         Claims accessClaims = jwtUtil.getClaims(accessToken);
@@ -49,18 +50,19 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
 
-            id = refreshClaims.get("id", Long.class);
+            String strId = refreshClaims.get("id", String.class);
+            id = UUID.fromString(strId);
             name = refreshClaims.get("name", String.class);
 
-            String newRefreshToken = jwtUtil.createJwt(id, name, jwtUtil.getRefreshTokenExpiredMs());
+            String newRefreshToken = jwtUtil.createJwt(id.toString(), name, jwtUtil.getRefreshTokenExpiredMs());
             Cookie newRefreshCookie = jwtUtil.createCookie(jwtUtil.getRefreshTokenName(), newRefreshToken, jwtUtil.getRefreshTokenExpiredMs());
             response.addCookie(newRefreshCookie);
 
-            String newAccessToken = jwtUtil.createJwt(id, name, jwtUtil.getAccessTokenExpiredMs());
+            String newAccessToken = jwtUtil.createJwt(id.toString(), name, jwtUtil.getAccessTokenExpiredMs());
             Cookie newAccessCookie = jwtUtil.createCookie(jwtUtil.getAccessTokenName(), newAccessToken, jwtUtil.getAccessTokenExpiredMs());
             response.addCookie(newAccessCookie);
         } else {
-            id = accessClaims.get("id", Long.class);
+            id = UUID.fromString(accessClaims.get("id", String.class));
             name = accessClaims.get("name", String.class);
         }
 

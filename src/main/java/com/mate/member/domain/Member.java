@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -17,8 +18,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(unique = true)
+    private Integer githubId;
+
+    @Column(nullable = false)
+    private String githubLogin;
 
     @Column(nullable = false)
     private String name;
@@ -35,6 +43,7 @@ public class Member {
 
     private JobsEnum job;
     private String bio;
+    private String email;
 
     /**
      * Member Patch Method

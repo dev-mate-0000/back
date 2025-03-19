@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class CustomOAuthUser implements OAuth2User {
@@ -28,7 +29,7 @@ public class CustomOAuthUser implements OAuth2User {
         return member.getName();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return member.getId();
     }
 }

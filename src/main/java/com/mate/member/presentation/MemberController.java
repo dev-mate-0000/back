@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/members")
@@ -19,7 +20,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponse.FindMember> findMemberById(@PathVariable("id") Long id) {
+    public ResponseEntity<MemberResponse.FindMember> findMemberById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok().body(memberService.findMemberById(id));
     }
 

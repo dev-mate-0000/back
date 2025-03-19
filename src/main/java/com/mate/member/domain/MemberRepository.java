@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class MemberRepository {
@@ -27,8 +28,18 @@ public class MemberRepository {
         return member;
     }
 
-    public Optional<Member> findById(Long id) {
+    public Optional<Member> findById(UUID id) {
         return Optional.ofNullable(em.find(Member.class, id));
+    }
+
+    public Optional<Member> findByGithubId(Integer githubId) {
+        List<Member> result = em.createQuery("SELECT m FROM Member m WHERE m.githubId = :githubId", Member.class)
+                .setParameter("githubId", githubId)
+                .getResultList();
+        if(!result.isEmpty()) {
+            return Optional.ofNullable(result.get(0));
+        }
+        return Optional.empty();
     }
 
     public List<Member> findSuggestMembers() {

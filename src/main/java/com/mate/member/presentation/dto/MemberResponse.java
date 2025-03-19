@@ -6,12 +6,13 @@ import com.mate.member.presentation.enums.JobsEnum;
 import lombok.Builder;
 
 import java.util.List;
+import java.util.UUID;
 
 public class MemberResponse {
 
     @Builder
     public record FindMember(
-        Long id,
+        UUID id,
         String name,
         String githubUrl,
         JobsEnum job,
@@ -43,7 +44,7 @@ public class MemberResponse {
 
     @Builder
     public record FindMemberSuggest(
-            Long id,
+            UUID id,
             String name
     ) {
 
