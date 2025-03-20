@@ -7,7 +7,6 @@ import com.mate.member.domain.MemberRepository;
 import com.mate.security.oauth.oauthserver.OAuthResponse;
 import com.mate.security.presentation.dto.OAuthMemberResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,13 +18,10 @@ public class OAuthLoginService {
     private final MemberRepository memberRepository;
     private final LanguageRepository languageRepository;
 
-    @Value("${spring.security.githubToken}")
-    private String githubToken;
-
     public OAuthMemberResponse.OAuthFindMember saveMember(OAuthResponse oAuthResponse) {
         Member member = getMember(oAuthResponse);
 
-        Map<String, Integer> languages = oAuthResponse.getLanguages(githubToken);
+        Map<String, Integer> languages = oAuthResponse.getLanguages(oAuthResponse.getGithubLogin());
         languages.entrySet().stream()
                 .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
                 .limit(5)
@@ -50,7 +46,7 @@ public class OAuthLoginService {
                         .githubUrl(oAuthResponse.getGithubUrl())
                         .bio(oAuthResponse.getBio())
                         .email(oAuthResponse.getEmail())
-                        .oAuthServer(oAuthResponse.getProvider())
+                        .oAuthProvider(oAuthResponse.getProvider())
                         .build());
 
         if(member.getId() != null) {

@@ -1,5 +1,5 @@
 package com.mate.security.oauth;
 
-public enum OAuthServer {
+public enum OAuthProvider {
     GITHUB
 }

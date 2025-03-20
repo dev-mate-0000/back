@@ -1,7 +1,7 @@
 package com.mate.member.domain;
 
 import com.mate.member.presentation.enums.JobsEnum;
-import com.mate.security.oauth.OAuthServer;
+import com.mate.security.oauth.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +34,7 @@ public class Member {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private OAuthServer oAuthServer;
+    private OAuthProvider oAuthProvider;
 
     @Builder.Default
     private Long priority = 0L;

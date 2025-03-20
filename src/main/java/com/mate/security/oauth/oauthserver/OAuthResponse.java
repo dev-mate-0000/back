@@ -1,6 +1,6 @@
 package com.mate.security.oauth.oauthserver;
 
-import com.mate.security.oauth.OAuthServer;
+import com.mate.security.oauth.OAuthProvider;
 
 import java.util.Map;
 
@@ -13,6 +13,7 @@ public interface OAuthResponse {
     String getBio();
     String getEmail();
 
-    OAuthServer getProvider();
-    Map<String, Integer>  getLanguages(String githubToken);
+    OAuthProvider getProvider();
+    Map<String, Integer>  getLanguages(String githubLogin);
+    void setUserInfo(String code);
 }

@@ -2,71 +2,95 @@ package com.mate.security.oauth.oauthserver;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mate.security.oauth.OAuthServer;
+import com.mate.security.oauth.OAuthProvider;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
+@Component
 public class GithubOAuthServer implements OAuthResponse{
 
-    private final Map<String, Object> res;
+    private Map<String, Object> response;
 
-    private final String GITHUB_API_URL = "https://api.github.com/users/";
+    @Value("${spring.security.oauth2.client.registration.github.client-id}")
+    private String clientId;
 
-    public GithubOAuthServer(final Map<String, Object> res) {
-        this.res = res;
-    }
+    @Value("${spring.security.oauth2.client.registration.github.client-secret}")
+    private String clientSecret;
+
+    @Value("${spring.security.oauth2.client.registration.github.redirect-uri}")
+    private String redirectUri;
+
+    @Value("${spring.security.githubToken}")
+    private String githubToken;
+
+    private final String GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token";
+    private final String GITHUB_USER_API_URL = "https://api.github.com/user";
+    private final String GITHUB_REPO_API_URL = "https://api.github.com/users";
 
     @Override
     public Integer getGithubId() {
-        return (int) res.get("id");
+        if(response.isEmpty()) return null;
+        return (int) response.get("id");
     }
 
     @Override
     public String getGithubLogin() {
-        return (String) res.get("login");
+        if(response.isEmpty()) return null;
+        return (String) response.get("login");
     }
 
     @Override
-    public OAuthServer getProvider() {
-        return OAuthServer.GITHUB;
+    public OAuthProvider getProvider() {
+        if(response.isEmpty()) return null;
+        return OAuthProvider.GITHUB;
     }
 
     @Override
     public String getName() {
-        return res.get("name").toString();
+        if(response.isEmpty()) return null;
+        return response.get("name").toString();
     }
 
     @Override
     public String getGithubUrl() {
-        return res.get("html_url").toString();
+        if(response.isEmpty()) return null;
+        return response.get("html_url").toString();
     }
 
     @Override
     public String getBio() {
-        return Optional.ofNullable(res.get("bio"))
+        if(response.isEmpty()) return null;
+        return Optional.ofNullable(response.get("bio"))
                 .map(Object::toString)
                 .orElse("");
     }
 
     @Override
     public String getEmail() {
-        return Optional.ofNullable(res.get("email"))
+        if(response.isEmpty()) return null;
+        return Optional.ofNullable(response.get("email"))
                 .map(Object::toString)
                 .orElse("");
     }
 
+    /**
+     * 사용자의 사용 언어 정보를 불러옴
+     * @param githubLogin github 로그인 정보
+     * @return Map<String, Integer> (언어, 사용된 바이트 수)
+     */
     @Override
-    public Map<String, Integer> getLanguages(String githubToken) {
-        String username = getGithubLogin();
-        if (username == null) {
-            return null;
-        }
-
+    public Map<String, Integer> getLanguages(String githubLogin) {
         try {
-            URL url = new URL(GITHUB_API_URL + username + "/repos");
+            URL url = new URL(GITHUB_REPO_API_URL + "/" + githubLogin + "/repos");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
@@ -130,5 +154,43 @@ public class GithubOAuthServer implements OAuthResponse{
         } catch (IOException e) {
             return Collections.emptyMap();
         }
+    }
+
+    @Override
+    public void setUserInfo(String code) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
+        params.add("code", code);
+        params.add("redirect_uri", redirectUri);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        ResponseEntity<String> response = restTemplate.exchange(GITHUB_TOKEN_URL, HttpMethod.POST, request, String.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            String[] responseBody = response.getBody().split("&");
+            for (String param : responseBody) {
+                if (param.startsWith("access_token=")) {
+                    String accessToken = param.split("=")[1];
+                    this.setResponse(accessToken);
+                }
+            }
+        }
+    }
+
+    private void setResponse(String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.set("Accept", "application/json");
+
+        HttpEntity<String> entity = new HttpEntity<>("", headers);
+        ResponseEntity<Map> response = restTemplate.exchange(GITHUB_USER_API_URL, HttpMethod.GET, entity, Map.class);
+
+        this.response = response.getBody();
     }
 }
