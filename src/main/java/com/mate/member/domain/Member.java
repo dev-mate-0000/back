@@ -44,6 +44,7 @@ public class Member {
 
     private String bio;
 
+    @Column(unique = true)
     private String email;
 
     /**
