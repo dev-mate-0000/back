@@ -28,15 +28,7 @@ public class SecurityConfig {
 
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    String origin = request.getHeader("Origin");
-
-                    if (origin != null && origin.startsWith("http://")) {
-                        if (origin.contains("172.18") || origin.equals("http://back:8080")) {
-                            config.setAllowedOrigins(List.of(origin));
-                        } else {
-                            config.setAllowedOrigins(List.of("http://localhost:3000"));
-                        }
-                    }
+                    config.addAllowedOriginPattern(CorsConfiguration.ALL);
 
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
                     config.setAllowCredentials(true);
