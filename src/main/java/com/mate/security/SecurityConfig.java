@@ -28,7 +28,16 @@ public class SecurityConfig {
 
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("*"));
+                    String origin = request.getHeader("Origin");
+
+                    if (origin != null && origin.startsWith("http://")) {
+                        if (origin.contains("172.18") || origin.equals("http://back:8080")) {
+                            config.setAllowedOrigins(List.of(origin));
+                        } else {
+                            config.setAllowedOrigins(List.of("http://localhost:3000"));
+                        }
+                    }
+
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(List.of(jwtUtil.getAccessTokenName(), jwtUtil.getRefreshTokenName(), "Content-Type"));
