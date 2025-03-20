@@ -39,8 +39,11 @@ public class Member {
     @Builder.Default
     private Long priority = 0L;
 
+    @Enumerated(EnumType.STRING)
     private JobsEnum job;
+
     private String bio;
+
     private String email;
 
     /**

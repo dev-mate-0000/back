@@ -1,6 +1,6 @@
 package com.mate.security;
 
-import com.mate.security.oauth.OAuthUserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final OAuthUserService oAuthUserService;
-    private final CustomSuccessHandler customSuccessHandler;
     private final JwtUtil jwtUtil;
 
     @Bean
@@ -30,8 +28,8 @@ public class SecurityConfig {
 
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트엔드 주소
-                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                    config.setAllowedOrigins(List.of("http://localhost:3000"));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(List.of(jwtUtil.getAccessTokenName(), jwtUtil.getRefreshTokenName(), "Content-Type"));
                     return config;
@@ -41,14 +39,13 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/members/**").authenticated()
-                        .requestMatchers("/login/checker").authenticated()
                         .anyRequest().permitAll()
                 )
 
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(oAuthUserService))
-                        .successHandler(customSuccessHandler)
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+                        })
                 )
 
                 .addFilterAfter(new JwtFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
@@ -56,3 +53,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
