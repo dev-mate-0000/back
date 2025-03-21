@@ -3,7 +3,7 @@ spring:
     secret: ${KEY}
 
   security:
-    redirectURL: http://localhost:3000
+    redirectURL: ${LOGIN_REDIRECT}
     githubToken: ${GITHUB_TOKEN}
     oauth2:
       client:
