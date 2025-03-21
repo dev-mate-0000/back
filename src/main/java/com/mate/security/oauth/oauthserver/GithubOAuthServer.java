@@ -88,7 +88,7 @@ public class GithubOAuthServer implements OAuthResponse{
      * @return Map<String, Integer> (언어, 사용된 바이트 수)
      */
     @Override
-    public Map<String, Integer> getLanguages(String githubLogin) {
+    public Map<String, Integer> getSkills(String githubLogin) {
         try {
             URL url = new URL(GITHUB_REPO_API_URL + "/" + githubLogin + "/repos");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

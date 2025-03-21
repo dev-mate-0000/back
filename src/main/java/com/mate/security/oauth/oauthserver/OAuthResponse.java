@@ -14,6 +14,6 @@ public interface OAuthResponse {
     String getEmail();
 
     OAuthProvider getProvider();
-    Map<String, Integer>  getLanguages(String githubLogin);
+    Map<String, Integer> getSkills(String githubLogin);
     void setUserInfo(String code);
 }

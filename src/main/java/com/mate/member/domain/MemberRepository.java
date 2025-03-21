@@ -32,9 +32,9 @@ public class MemberRepository {
         return Optional.ofNullable(em.find(Member.class, id));
     }
 
-    public Optional<Member> findByGithubId(Integer githubId) {
-        List<Member> result = em.createQuery("SELECT m FROM Member m WHERE m.githubId = :githubId", Member.class)
-                .setParameter("githubId", githubId)
+    public Optional<Member> findByGithubId(Integer providerId) {
+        List<Member> result = em.createQuery("SELECT m FROM Member m WHERE m.providerId = :providerId", Member.class)
+                .setParameter("providerId", providerId)
                 .getResultList();
         if(!result.isEmpty()) {
             return Optional.ofNullable(result.get(0));

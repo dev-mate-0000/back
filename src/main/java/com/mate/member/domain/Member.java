@@ -21,16 +21,16 @@ public class Member {
     private UUID id;
 
     @Column(unique = true)
-    private Integer githubId;
+    private Integer providerId;
 
     @Column(nullable = false)
-    private String githubLogin;
+    private String providerLogin;
 
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String githubUrl;
+    private String providerUrl;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -44,7 +44,6 @@ public class Member {
 
     private String bio;
 
-    @Column(unique = true)
     private String email;
 
     /**

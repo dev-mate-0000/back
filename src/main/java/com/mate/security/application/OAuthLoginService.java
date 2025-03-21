@@ -1,7 +1,7 @@
 package com.mate.security.application;
 
-import com.mate.member.domain.Language;
-import com.mate.member.domain.LanguageRepository;
+import com.mate.member.domain.Skill;
+import com.mate.member.domain.SkillRepository;
 import com.mate.member.domain.Member;
 import com.mate.member.domain.MemberRepository;
 import com.mate.security.oauth.oauthserver.OAuthResponse;
@@ -16,23 +16,23 @@ import java.util.Map;
 public class OAuthLoginService {
 
     private final MemberRepository memberRepository;
-    private final LanguageRepository languageRepository;
+    private final SkillRepository skillRepository;
 
     public OAuthMemberResponse.OAuthFindMember saveMember(OAuthResponse oAuthResponse) {
         Member member = getMember(oAuthResponse);
 
-        Map<String, Integer> languages = oAuthResponse.getLanguages(oAuthResponse.getGithubLogin());
-        languages.entrySet().stream()
+        Map<String, Integer> skills = oAuthResponse.getSkills(oAuthResponse.getGithubLogin());
+        skills.entrySet().stream()
                 .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
                 .limit(5)
                 .forEach(data -> {
-                    Language language = Language.builder()
+                    Skill skill = Skill.builder()
                             .language(data.getKey())
                             .codeLines(data.getValue())
                             .member(member)
                             .build();
 
-                    languageRepository.save(language);
+                    skillRepository.save(skill);
                 });
         return OAuthMemberResponse.OAuthFindMember.toDto(member);
     }
@@ -40,17 +40,17 @@ public class OAuthLoginService {
     private Member getMember(OAuthResponse oAuthResponse) {
         Member member = memberRepository.findByGithubId(oAuthResponse.getGithubId())
                 .orElse(Member.builder()
-                        .githubId(oAuthResponse.getGithubId())
-                        .githubLogin(oAuthResponse.getGithubLogin())
+                        .providerId(oAuthResponse.getGithubId())
+                        .providerLogin(oAuthResponse.getGithubLogin())
                         .name(oAuthResponse.getName())
-                        .githubUrl(oAuthResponse.getGithubUrl())
+                        .providerUrl(oAuthResponse.getGithubUrl())
                         .bio(oAuthResponse.getBio())
                         .email(oAuthResponse.getEmail())
                         .oAuthProvider(oAuthResponse.getProvider())
                         .build());
 
         if(member.getId() != null) {
-            languageRepository.deleteByMemberId(member.getId());
+            skillRepository.deleteByMemberId(member.getId());
         }
 
         return memberRepository.save(member);

@@ -1,8 +1,8 @@
 package com.mate.member.application;
 
 import com.mate.config.exception.custom.NotFoundException;
-import com.mate.member.domain.Language;
-import com.mate.member.domain.LanguageRepository;
+import com.mate.member.domain.Skill;
+import com.mate.member.domain.SkillRepository;
 import com.mate.member.domain.Member;
 import com.mate.member.domain.MemberRepository;
 import com.mate.member.presentation.dto.MemberRequest;
@@ -19,15 +19,15 @@ import java.util.UUID;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final LanguageRepository languageRepository;
+    private final SkillRepository skillRepository;
 
     private final String NOT_FOUND_MEMBER_EXCEPTION = "사용자 정보를 찾을 수 없습니다.";
 
     public MemberResponse.FindMember findMemberById(UUID id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
-        List<Language> languages = languageRepository.findByMemberId(member.getId());
-        return MemberResponse.FindMember.toDto(member, languages);
+        List<Skill> skills = skillRepository.findByMemberId(member.getId());
+        return MemberResponse.FindMember.toDto(member, skills);
     }
 
     public List<MemberResponse.FindMemberSuggest> suggestMembers() {
@@ -45,8 +45,8 @@ public class MemberService {
     public MemberResponse.FindMember patchMember(UUID memberId, MemberRequest.PatchMember dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
-        List<Language> languages = languageRepository.findByMemberId(member.getId());
+        List<Skill> skills = skillRepository.findByMemberId(member.getId());
         member.patchMember(dto.job(), dto.bio());
-        return MemberResponse.FindMember.toDto(member, languages);
+        return MemberResponse.FindMember.toDto(member, skills);
     }
 }

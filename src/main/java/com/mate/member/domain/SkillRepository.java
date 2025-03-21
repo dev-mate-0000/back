@@ -9,29 +9,29 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class LanguageRepository {
+public class SkillRepository {
 
     @PersistenceContext
     private EntityManager em;
 
-    public List<Language> findByMemberId(UUID memberId) {
-        return em.createQuery("SELECT l FROM Language l where l.member.id = :memberId", Language.class)
+    public List<Skill> findByMemberId(UUID memberId) {
+        return em.createQuery("SELECT l FROM Skill l where l.member.id = :memberId", Skill.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
     }
 
     @Transactional
-    public void save(Language language) {
-        if(language.getId() == null) {
-            em.persist(language);
+    public void save(Skill skill) {
+        if(skill.getId() == null) {
+            em.persist(skill);
             return;
         }
-        em.merge(language);
+        em.merge(skill);
     }
 
     @Transactional
     public void deleteByMemberId(UUID memberId) {
-        em.createQuery("DELETE FROM Language l WHERE l.member.id = :memberId")
+        em.createQuery("DELETE FROM Skill l WHERE l.member.id = :memberId")
                 .setParameter("memberId", memberId)
                 .executeUpdate();
     }
