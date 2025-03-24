@@ -46,11 +46,4 @@ public class MemberController {
         memberService.patchMemberBySelf(userInfo.getId(), dto);
         return ResponseEntity.ok().build();
     }
-
-    @PatchMapping("/self/status")
-    public ResponseEntity<Void> updateMemberByLoggedInUser(@RequestBody MemberRequest.PatchMemberStatus dto) {
-        CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication();
-        memberService.patchMemberStatusBySelf(userInfo.getId(), dto);
-        return ResponseEntity.ok().build();
-    }
 }

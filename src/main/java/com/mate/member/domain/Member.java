@@ -56,21 +56,17 @@ public class Member {
      * Member Patch Method
      * @param job
      * @param bio
+     * @param status
      */
-    public void patchMember(JobsEnum job, String bio) {
+    public void patchMember(JobsEnum job, String bio, MemberStatusEnum status) {
         if(job != null) {
             this.job = job;
         }
         if(bio != null && !bio.isEmpty()) {
             this.bio = bio;
         }
-    }
-
-    /**
-     * Member Status Patch Method
-     * @param status
-     */
-    public void patchStatus(MemberStatusEnum status) {
-        this.status = status;
+        if(status != null) {
+            this.status = status;
+        }
     }
 }

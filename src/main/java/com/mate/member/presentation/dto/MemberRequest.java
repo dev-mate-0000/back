@@ -9,11 +9,7 @@ public class MemberRequest {
     @Builder
     public record PatchMember(
             JobsEnum job,
-            String bio
-    ) {}
-
-    @Builder
-    public record PatchMemberStatus(
+            String bio,
             MemberStatusEnum status
     ) {}
 }

@@ -52,13 +52,6 @@ public class MemberService {
     public void patchMemberBySelf(UUID memberId, MemberRequest.PatchMember dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
-        member.patchMember(dto.job(), dto.bio());
-    }
-
-    @Transactional
-    public void patchMemberStatusBySelf(UUID memberId, MemberRequest.PatchMemberStatus dto) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
-        member.patchStatus(dto.status());
+        member.patchMember(dto.job(), dto.bio(), dto.status());
     }
 }
