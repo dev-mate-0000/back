@@ -42,11 +42,21 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse.FindMember patchMember(UUID memberId, MemberRequest.PatchMember dto) {
+    public MemberResponse.FindMemberSelf patchMember(UUID memberId, MemberRequest.PatchMember dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
-        List<Skill> skills = skillRepository.findByMemberId(member.getId());
         member.patchMember(dto.job(), dto.bio());
-        return MemberResponse.FindMember.toDto(member, skills);
+
+        List<Skill> skills = skillRepository.findByMemberId(member.getId());
+        return MemberResponse.FindMemberSelf.toDto(member, skills);
+    }
+
+    @Transactional
+    public MemberResponse.FindMemberSelf patchMemberStatus(UUID memberId, MemberRequest.PatchMemberStatus dto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
+        member.patchStatus(dto.status());
+        List<Skill> skills = skillRepository.findByMemberId(member.getId());
+        return MemberResponse.FindMemberSelf.toDto(member, skills);
     }
 }

@@ -1,6 +1,7 @@
 package com.mate.member.domain;
 
 import com.mate.member.presentation.enums.JobsEnum;
+import com.mate.member.presentation.enums.MemberStatusEnum;
 import com.mate.security.oauth.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -46,6 +47,10 @@ public class Member {
 
     private String email;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MemberStatusEnum status;
+
     /**
      * Member Patch Method
      * @param job
@@ -58,5 +63,13 @@ public class Member {
         if(bio != null && !bio.isEmpty()) {
             this.bio = bio;
         }
+    }
+
+    /**
+     * Member Status Patch Method
+     * @param status
+     */
+    public void patchStatus(MemberStatusEnum status) {
+        this.status = status;
     }
 }

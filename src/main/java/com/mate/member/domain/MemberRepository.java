@@ -1,5 +1,6 @@
 package com.mate.member.domain;
 
+import com.mate.member.presentation.enums.MemberStatusEnum;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -43,13 +44,15 @@ public class MemberRepository {
     }
 
     public List<Member> findSuggestMembers() {
-        return em.createQuery("SELECT m FROM Member m ORDER BY m.priority DESC", Member.class)
+        return em.createQuery("SELECT m FROM Member m WHERE m.status = :status ORDER BY m.priority DESC", Member.class)
+                .setParameter("status", MemberStatusEnum.SHOW)
                 .setMaxResults(SUGGEST_START_MEMBER_SIZE)
                 .getResultList();
     }
 
     public Optional<Member> findSuggestNextMember(int page) {
-        List<Member> result = em.createQuery("SELECT m FROM Member m ORDER BY m.priority DESC", Member.class)
+        List<Member> result = em.createQuery("SELECT m FROM Member m WHERE m.status = :status ORDER BY m.priority DESC", Member.class)
+                .setParameter("status", MemberStatusEnum.SHOW)
                 .setFirstResult(SUGGEST_START_MEMBER_SIZE + page)
                 .setMaxResults(1)
                 .getResultList();
