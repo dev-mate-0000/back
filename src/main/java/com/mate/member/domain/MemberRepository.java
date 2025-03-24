@@ -45,14 +45,14 @@ public class MemberRepository {
 
     public List<Member> findSuggestMembers() {
         return em.createQuery("SELECT m FROM Member m WHERE m.status = :status ORDER BY m.priority DESC", Member.class)
-                .setParameter("status", MemberStatusEnum.SHOW)
+                .setParameter("status", MemberStatusEnum.PUBLIC)
                 .setMaxResults(SUGGEST_START_MEMBER_SIZE)
                 .getResultList();
     }
 
     public Optional<Member> findSuggestNextMember(int page) {
         List<Member> result = em.createQuery("SELECT m FROM Member m WHERE m.status = :status ORDER BY m.priority DESC", Member.class)
-                .setParameter("status", MemberStatusEnum.SHOW)
+                .setParameter("status", MemberStatusEnum.PUBLIC)
                 .setFirstResult(SUGGEST_START_MEMBER_SIZE + page)
                 .setMaxResults(1)
                 .getResultList();

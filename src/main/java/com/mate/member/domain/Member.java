@@ -49,7 +49,8 @@ public class Member {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private MemberStatusEnum status;
+    @Builder.Default
+    private MemberStatusEnum status = MemberStatusEnum.PUBLIC;
 
     /**
      * Member Patch Method

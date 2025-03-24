@@ -41,22 +41,24 @@ public class MemberService {
         return MemberResponse.FindMemberSuggest.toDto(member);
     }
 
-    @Transactional
-    public MemberResponse.FindMemberSelf patchMember(UUID memberId, MemberRequest.PatchMember dto) {
-        Member member = memberRepository.findById(memberId)
+    public MemberResponse.FindMemberSelf findMemberBySelf(UUID id) {
+        Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
-        member.patchMember(dto.job(), dto.bio());
-
         List<Skill> skills = skillRepository.findByMemberId(member.getId());
         return MemberResponse.FindMemberSelf.toDto(member, skills);
     }
 
     @Transactional
-    public MemberResponse.FindMemberSelf patchMemberStatus(UUID memberId, MemberRequest.PatchMemberStatus dto) {
+    public void patchMemberBySelf(UUID memberId, MemberRequest.PatchMember dto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
+        member.patchMember(dto.job(), dto.bio());
+    }
+
+    @Transactional
+    public void patchMemberStatusBySelf(UUID memberId, MemberRequest.PatchMemberStatus dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
         member.patchStatus(dto.status());
-        List<Skill> skills = skillRepository.findByMemberId(member.getId());
-        return MemberResponse.FindMemberSelf.toDto(member, skills);
     }
 }

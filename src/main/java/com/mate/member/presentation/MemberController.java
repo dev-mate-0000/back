@@ -35,20 +35,22 @@ public class MemberController {
     }
 
     @GetMapping("/self")
-    public ResponseEntity<MemberResponse.FindMember> findMemberByLoggedInUser() {
+    public ResponseEntity<MemberResponse.FindMemberSelf> findMemberByLoggedInUser() {
         CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication();
-        return ResponseEntity.ok().body(memberService.findMemberById(userInfo.getId()));
+        return ResponseEntity.ok().body(memberService.findMemberBySelf(userInfo.getId()));
     }
 
     @PatchMapping("/self")
-    public ResponseEntity<MemberResponse.FindMemberSelf> updateMemberByLoggedInUser(@RequestBody MemberRequest.PatchMember dto) {
+    public ResponseEntity<Void> updateMemberByLoggedInUser(@RequestBody MemberRequest.PatchMember dto) {
         CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication();
-        return ResponseEntity.ok().body(memberService.patchMember(userInfo.getId(), dto));
+        memberService.patchMemberBySelf(userInfo.getId(), dto);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/self/status")
-    public ResponseEntity<MemberResponse.FindMemberSelf> updateMemberByLoggedInUser(@RequestBody MemberRequest.PatchMemberStatus dto) {
+    public ResponseEntity<Void> updateMemberByLoggedInUser(@RequestBody MemberRequest.PatchMemberStatus dto) {
         CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication();
-        return ResponseEntity.ok().body(memberService.patchMemberStatus(userInfo.getId(), dto));
+        memberService.patchMemberStatusBySelf(userInfo.getId(), dto);
+        return ResponseEntity.ok().build();
     }
 }
