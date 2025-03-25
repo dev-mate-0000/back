@@ -1,5 +1,6 @@
 package com.mate.member.presentation;
 
+import com.mate.config.exception.custom.AuthedException;
 import com.mate.member.application.MemberService;
 import com.mate.member.presentation.dto.MemberRequest;
 import com.mate.member.presentation.dto.MemberResponse;
@@ -19,6 +20,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    private static final String UNAUTHORIZED_USER = "인증되지 않은 사용자입니다";
+
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponse.FindMember> findMemberById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok().body(memberService.findMemberById(id));
@@ -36,13 +39,15 @@ public class MemberController {
 
     @GetMapping("/self")
     public ResponseEntity<MemberResponse.FindMemberSelf> findMemberByLoggedInUser() {
-        CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication();
+        CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication()
+                .orElseThrow(() -> new AuthedException(UNAUTHORIZED_USER));
         return ResponseEntity.ok().body(memberService.findMemberBySelf(userInfo.getId()));
     }
 
     @PatchMapping("/self")
-    public ResponseEntity<Void> updateMemberByLoggedInUser(@RequestBody MemberRequest.PatchMember dto) {
-        CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication();
+    public ResponseEntity<Void> patchMemberByLoggedInUser(@RequestBody MemberRequest.PatchMember dto) {
+        CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication()
+                .orElseThrow(() -> new AuthedException(UNAUTHORIZED_USER));
         memberService.patchMemberBySelf(userInfo.getId(), dto);
         return ResponseEntity.ok().build();
     }

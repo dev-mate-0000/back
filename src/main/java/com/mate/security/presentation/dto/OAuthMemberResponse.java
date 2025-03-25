@@ -18,4 +18,15 @@ public class OAuthMemberResponse {
                     .build();
         }
     }
+
+    @Builder
+    public record OAuthUrl(
+            String url
+    ) {
+        public static OAuthUrl toDto(String url) {
+            return OAuthUrl.builder()
+                    .url(url)
+                    .build();
+        }
+    }
 }

@@ -1,7 +1,10 @@
 package com.mate.security.presentation;
 
+import com.mate.config.exception.custom.AuthedException;
 import com.mate.security.JwtUtil;
+import com.mate.security.SecurityUtil;
 import com.mate.security.application.OAuthLoginService;
+import com.mate.security.oauth.CustomOAuthUser;
 import com.mate.security.oauth.OAuthProvider;
 import com.mate.security.oauth.oauthserver.GithubOAuthServer;
 import com.mate.security.oauth.oauthserver.OAuthResponse;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,25 +28,29 @@ import java.io.IOException;
 public class OAuthLoginController {
 
     private final OAuthLoginService oAuthLoginService;
+    private final JwtUtil jwtUtil;
+
+    private final GithubOAuthServer githubOAuthServer;
+
+    @Value("${spring.security.redirectURL}")
+    private String REDIRECT_URL;
 
     @Value("${spring.security.oauth2.client.registration.github.client-id}")
     private String clientId;
 
     private final String GITHUB_LOGIN_URL = "https://github.com/login/oauth/authorize";
 
-    private final JwtUtil jwtUtil;
-
-    @Value("${spring.security.redirectURL}")
-    private String REDIRECT_URL;
-
-    private final GithubOAuthServer githubOAuthServer;
-
     private final String FAIL_GET_PROVIDER = "OAuth 공급자 정보를 찾을 수 없습니다.";
 
     @GetMapping("/github")
-    public ResponseEntity<String> getGithubLoginUrl() {
-        return ResponseEntity.ok()
-                .body(GITHUB_LOGIN_URL + "?client_id=" + clientId);
+    public ResponseEntity<OAuthMemberResponse.OAuthUrl> getGithubLoginUrl() {
+        Optional<CustomOAuthUser> userInfoOptional = SecurityUtil.getMemberIdByAuthentication();
+        if(userInfoOptional.isEmpty()) {
+            String url = GITHUB_LOGIN_URL + "?client_id=" + clientId;
+            return ResponseEntity.ok()
+                    .body(OAuthMemberResponse.OAuthUrl.toDto(url));
+        }
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/code/github")
