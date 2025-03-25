@@ -28,6 +28,10 @@ public class MemberRepository {
         return member;
     }
 
+    public void delete(Member member) {
+        em.remove(member);
+    }
+
     public Optional<Member> findById(UUID id) {
         return Optional.ofNullable(em.find(Member.class, id));
     }

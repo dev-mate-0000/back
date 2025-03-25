@@ -51,4 +51,11 @@ public class MemberService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
         member.patchMember(dto.job(), dto.bio(), dto.status());
     }
+
+    @Transactional
+    public void deleteMemberBySelf(UUID memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
+        memberRepository.delete(member);
+    }
 }
