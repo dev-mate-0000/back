@@ -1,0 +1,1 @@
+ALTER TABLE skill CHANGE code_lines codes INT;

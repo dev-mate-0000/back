@@ -19,17 +19,19 @@ public class MemberResponse {
             JobsEnum job,
             String bio,
             MemberStatusEnum status,
-            List<FindMemberLanguageInfo> languages
+            List<FindMemberSelfLanguageInfo> languages
     ) {
         @Builder
-        private record FindMemberLanguageInfo(
-                String language
+        private record FindMemberSelfLanguageInfo(
+                String language,
+                Integer codes
         ) {}
 
         public static FindMemberSelf toDto(Member member, List<Skill> languages) {
-            List<FindMemberLanguageInfo> rtnSkills = languages.stream().map(skill ->
-                    FindMemberLanguageInfo.builder()
+            List<FindMemberSelfLanguageInfo> rtnSkills = languages.stream().map(skill ->
+                    FindMemberSelfLanguageInfo.builder()
                             .language(String.valueOf(skill.getLanguage()))
+                            .codes(skill.getCodes())
                             .build()
             ).toList();
 
@@ -57,13 +59,15 @@ public class MemberResponse {
     ) {
         @Builder
         private record FindMemberLanguageInfo(
-                String language
+                String language,
+                Integer codes
         ) {}
 
         public static FindMember toDto(Member member, List<Skill> languages) {
             List<FindMemberLanguageInfo> rtnSkills = languages.stream().map(skill ->
                     FindMemberLanguageInfo.builder()
                             .language(String.valueOf(skill.getLanguage()))
+                            .codes(skill.getCodes())
                             .build()
             ).toList();
 
@@ -74,20 +78,6 @@ public class MemberResponse {
                     .job(member.getJob())
                     .bio(member.getBio())
                     .languages(rtnSkills)
-                    .build();
-        }
-    }
-
-    @Builder
-    public record FindMemberSuggest(
-            UUID id,
-            String name
-    ) {
-
-        public static FindMemberSuggest toDto(Member member) {
-            return FindMemberSuggest.builder()
-                    .id(member.getId())
-                    .name(member.getName())
                     .build();
         }
     }

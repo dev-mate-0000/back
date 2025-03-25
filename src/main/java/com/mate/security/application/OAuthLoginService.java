@@ -28,7 +28,7 @@ public class OAuthLoginService {
                 .forEach(data -> {
                     Skill skill = Skill.builder()
                             .language(data.getKey())
-                            .codeLines(data.getValue())
+                            .codes(data.getValue())
                             .member(member)
                             .build();
 

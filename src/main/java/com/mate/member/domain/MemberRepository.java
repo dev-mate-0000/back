@@ -13,7 +13,7 @@ import java.util.UUID;
 @Repository
 public class MemberRepository {
 
-    private final int SUGGEST_START_MEMBER_SIZE = 3;
+    private final int SUGGEST_START_MEMBER_SIZE = 10;
 
     @PersistenceContext
     private EntityManager em;
@@ -25,7 +25,6 @@ public class MemberRepository {
         } else {
             em.merge(member);
         }
-
         return member;
     }
 
@@ -43,23 +42,14 @@ public class MemberRepository {
         return Optional.empty();
     }
 
-    public List<Member> findSuggestMembers() {
+    public List<Member> findSuggestMembers(int page) {
+        int pageSize = SUGGEST_START_MEMBER_SIZE;
+        int firstResult = (page - 1) * pageSize;
+
         return em.createQuery("SELECT m FROM Member m WHERE m.status = :status ORDER BY m.priority DESC", Member.class)
                 .setParameter("status", MemberStatusEnum.PUBLIC)
-                .setMaxResults(SUGGEST_START_MEMBER_SIZE)
+                .setFirstResult(firstResult)
+                .setMaxResults(pageSize)
                 .getResultList();
-    }
-
-    public Optional<Member> findSuggestNextMember(int page) {
-        List<Member> result = em.createQuery("SELECT m FROM Member m WHERE m.status = :status ORDER BY m.priority DESC", Member.class)
-                .setParameter("status", MemberStatusEnum.PUBLIC)
-                .setFirstResult(SUGGEST_START_MEMBER_SIZE + page)
-                .setMaxResults(1)
-                .getResultList();
-
-        if(!result.isEmpty()) {
-            return Optional.ofNullable(result.get(0));
-        }
-        return Optional.empty();
     }
 }

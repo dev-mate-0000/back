@@ -30,15 +30,12 @@ public class MemberService {
         return MemberResponse.FindMember.toDto(member, skills);
     }
 
-    public List<MemberResponse.FindMemberSuggest> suggestMembers() {
-        List<Member> members = memberRepository.findSuggestMembers();
-        return members.stream().map(MemberResponse.FindMemberSuggest::toDto).toList();
-    }
-
-    public MemberResponse.FindMemberSuggest suggestNextMember(int page) {
-        Member member = memberRepository.findSuggestNextMember(page)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
-        return MemberResponse.FindMemberSuggest.toDto(member);
+    public List<MemberResponse.FindMember> suggestMembers(int page) {
+        List<Member> members = memberRepository.findSuggestMembers(page);
+        return members.stream().map(member -> {
+            List<Skill> skills = skillRepository.findByMemberId(member.getId());
+            return MemberResponse.FindMember.toDto(member, skills);
+        }).toList();
     }
 
     public MemberResponse.FindMemberSelf findMemberBySelf(UUID id) {

@@ -28,13 +28,8 @@ public class MemberController {
     }
 
     @GetMapping("/suggest")
-    public ResponseEntity<List<MemberResponse.FindMemberSuggest>> suggestMember() {
-        return ResponseEntity.ok().body(memberService.suggestMembers());
-    }
-
-    @GetMapping("/suggest/next")
-    public ResponseEntity<MemberResponse.FindMemberSuggest> suggestNextMember(@RequestParam("page") int page) {
-        return ResponseEntity.ok().body(memberService.suggestNextMember(page));
+    public ResponseEntity<List<MemberResponse.FindMember>> suggestMember(@RequestParam("page") int page) {
+        return ResponseEntity.ok().body(memberService.suggestMembers(page));
     }
 
     @GetMapping("/self")

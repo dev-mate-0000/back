@@ -19,7 +19,7 @@ public class Skill {
     private UUID id;
 
     private String language;
-    private Integer codeLines;
+    private Integer codes;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
