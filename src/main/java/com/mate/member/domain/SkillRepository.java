@@ -15,7 +15,7 @@ public class SkillRepository {
     private EntityManager em;
 
     public List<Skill> findByMemberId(UUID memberId) {
-        return em.createQuery("SELECT l FROM Skill l where l.member.id = :memberId", Skill.class)
+        return em.createQuery("SELECT l FROM Skill l where l.member.id = :memberId ORDER BY l.codeLines DESC", Skill.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
     }
