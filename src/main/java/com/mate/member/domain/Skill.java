@@ -21,7 +21,7 @@ public class Skill {
     private String language;
     private Integer codes;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 }
