@@ -8,21 +8,19 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-//@Entity
+@Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Star {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "liker_member")
-    private Member likerMember;
+    private String review;
 
-    @ManyToOne
-    @JoinColumn(name = "liked_member")
-    private Member likedMember;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
+    private Member member;
 }
