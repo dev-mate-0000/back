@@ -1,6 +1,6 @@
 package com.mate.member.presentation.enums;
 
-public enum MemberStatusEnum {
+public enum StatusEnum {
     PUBLIC,
     PRIVATE
 }

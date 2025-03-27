@@ -1,0 +1,16 @@
+ALTER TABLE comment
+    MODIFY member_id BINARY(16) NOT NULL;
+
+ALTER TABLE skill
+    MODIFY member_id BINARY(16) NOT NULL;
+
+ALTER TABLE member
+    MODIFY status VARCHAR(25) NOT NULL DEFAULT 'PUBLIC';
+
+ALTER TABLE comment ADD status VARCHAR(25) NOT NULL DEFAULT 'PUBLIC';
+
+ALTER TABLE comment
+    ADD reviewer_id BINARY(16) NOT NULL;
+
+ALTER TABLE comment
+    ADD CONSTRAINT fk_reviewer FOREIGN KEY (reviewer_id) REFERENCES member(id) ON DELETE CASCADE;

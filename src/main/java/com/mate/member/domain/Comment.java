@@ -1,5 +1,6 @@
 package com.mate.member.domain;
 
+import com.mate.member.presentation.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +24,13 @@ public class Comment {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "reviewer_id")
+    private Member reviewer;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private StatusEnum status = StatusEnum.PUBLIC;
 }

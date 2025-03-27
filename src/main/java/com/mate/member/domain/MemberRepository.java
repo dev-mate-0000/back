@@ -1,6 +1,6 @@
 package com.mate.member.domain;
 
-import com.mate.member.presentation.enums.MemberStatusEnum;
+import com.mate.member.presentation.enums.StatusEnum;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -51,7 +51,7 @@ public class MemberRepository {
         int firstResult = (page - 1) * pageSize;
 
         return em.createQuery("SELECT m FROM Member m WHERE m.status = :status ORDER BY m.priority DESC", Member.class)
-                .setParameter("status", MemberStatusEnum.PUBLIC)
+                .setParameter("status", StatusEnum.PUBLIC)
                 .setFirstResult(firstResult)
                 .setMaxResults(pageSize)
                 .getResultList();

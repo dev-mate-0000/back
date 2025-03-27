@@ -3,7 +3,7 @@ package com.mate.member.presentation.dto;
 import com.mate.member.domain.Skill;
 import com.mate.member.domain.Member;
 import com.mate.member.presentation.enums.JobsEnum;
-import com.mate.member.presentation.enums.MemberStatusEnum;
+import com.mate.member.presentation.enums.StatusEnum;
 import lombok.Builder;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class MemberResponse {
             String githubUrl,
             JobsEnum job,
             String bio,
-            MemberStatusEnum status,
+            StatusEnum status,
             List<FindMemberSelfLanguageInfo> languages
     ) {
         @Builder

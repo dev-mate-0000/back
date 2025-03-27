@@ -1,7 +1,7 @@
 package com.mate.member.domain;
 
 import com.mate.member.presentation.enums.JobsEnum;
-import com.mate.member.presentation.enums.MemberStatusEnum;
+import com.mate.member.presentation.enums.StatusEnum;
 import com.mate.security.oauth.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,7 +50,7 @@ public class Member {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private MemberStatusEnum status = MemberStatusEnum.PUBLIC;
+    private StatusEnum status = StatusEnum.PUBLIC;
 
     /**
      * Member Patch Method
@@ -58,7 +58,7 @@ public class Member {
      * @param bio
      * @param status
      */
-    public void patchMember(JobsEnum job, String bio, MemberStatusEnum status) {
+    public void patchMember(JobsEnum job, String bio, StatusEnum status) {
         if(job != null) {
             this.job = job;
         }
