@@ -23,8 +23,8 @@ public class MemberService {
 
     private final String NOT_FOUND_MEMBER_EXCEPTION = "사용자 정보를 찾을 수 없습니다.";
 
-    public MemberResponse.FindMember findMemberById(UUID id) {
-        Member member = memberRepository.findById(id)
+    public MemberResponse.FindMember findMemberById(UUID memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER_EXCEPTION));
         List<Skill> skills = skillRepository.findByMemberId(member.getId());
         return MemberResponse.FindMember.toDto(member, skills);

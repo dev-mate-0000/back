@@ -27,8 +27,8 @@ public class MemberResponse {
                 Integer codes
         ) {}
 
-        public static FindMemberSelf toDto(Member member, List<Skill> languages) {
-            List<FindMemberSelfLanguageInfo> rtnSkills = languages.stream().map(skill ->
+        public static FindMemberSelf toDto(Member member, List<Skill> skills) {
+            List<FindMemberSelfLanguageInfo> rtnSkills = skills.stream().map(skill ->
                     FindMemberSelfLanguageInfo.builder()
                             .language(String.valueOf(skill.getLanguage()))
                             .codes(skill.getCodes())
@@ -63,8 +63,8 @@ public class MemberResponse {
                 Integer codes
         ) {}
 
-        public static FindMember toDto(Member member, List<Skill> languages) {
-            List<FindMemberLanguageInfo> rtnSkills = languages.stream().map(skill ->
+        public static FindMember toDto(Member member, List<Skill> skills) {
+            List<FindMemberLanguageInfo> rtnSkills = skills.stream().map(skill ->
                     FindMemberLanguageInfo.builder()
                             .language(String.valueOf(skill.getLanguage()))
                             .codes(skill.getCodes())

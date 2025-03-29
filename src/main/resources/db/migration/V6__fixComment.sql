@@ -1,0 +1,2 @@
+ALTER TABLE comment
+    MODIFY review VARCHAR(500) NOT NULL;;
