@@ -8,6 +8,7 @@ import com.mate.security.JwtUtil;
 import com.mate.security.SecurityUtil;
 import com.mate.security.oauth.CustomOAuthUser;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -45,7 +46,7 @@ public class MemberController {
     }
 
     @PatchMapping("/self")
-    public ResponseEntity<Void> patchMemberByLoggedInUser(@RequestBody MemberRequest.PatchMember dto) {
+    public ResponseEntity<Void> patchMemberByLoggedInUser(@RequestBody @Valid MemberRequest.PatchMember dto) {
         CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication()
                 .orElseThrow(() -> new AuthedException(UNAUTHORIZED_USER));
         memberService.patchMemberBySelf(userInfo.getId(), dto);
