@@ -23,7 +23,7 @@ public class CommentRepository {
     }
 
     public List<Comment> findByMemberId(UUID memberId) {
-        return em.createQuery("SELECT c FROM Comment c WHERE c.member.id = :memberId", Comment.class)
+        return em.createQuery("SELECT c FROM Comment c WHERE c.member.id = :memberId ORDER BY c.createdAt DESC", Comment.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
     }

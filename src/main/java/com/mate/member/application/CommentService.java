@@ -42,11 +42,23 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public List<CommentResponse.FindComment> findCommentById(UUID memberId) {
-        List<Comment> comments = commentRepository.findByMemberId(memberId);
-        return comments.stream().map(CommentResponse.FindComment::toDto).toList();
+    /**
+     * 특정 유저의 댓글 목록 조회
+     * @param memberId 호출하는 유저 ID
+     * @param targetMemberId 댓글 목록을 찾고자 하는 유저 ID
+     * @return
+     */
+    public List<CommentResponse.FindComment> findCommentById(UUID memberId, UUID targetMemberId) {
+        List<Comment> comments = commentRepository.findByMemberId(targetMemberId);
+        return comments.stream().map(comment -> CommentResponse.FindComment.toDto(memberId, comment)).toList();
     }
 
+    /**
+     * 댓글 수정
+     * @param commentId 댓글 ID
+     * @param reviewerId 작성자 유저 ID(호출하는 유저 ID) 실제 작성자와 다르다면 NotFoundException
+     * @param dto
+     */
     @Transactional
     public void patchCommentByCommentIdAndReviewerId(UUID commentId, UUID reviewerId, CommentRequest.PatchComment dto) {
         Comment comment = commentRepository.findById(commentId)
@@ -57,6 +69,11 @@ public class CommentService {
         comment.patch(dto.review());
     }
 
+    /**
+     * 댓글 삭제
+     * @param commentId 댓글 ID
+     * @param reviewerId 작성자 유저 ID(호출하는 유저 ID) 실제 작성자와 다르다면 NotFoundException
+     */
     @Transactional
     public void deleteCommentByCommentIdAndReviewId(UUID commentId, UUID reviewerId) {
         Comment comment = commentRepository.findById(commentId)

@@ -46,14 +46,9 @@ public class MemberRepository {
         return Optional.empty();
     }
 
-    public List<Member> findSuggestMembers(int page) {
-        int pageSize = SUGGEST_START_MEMBER_SIZE;
-        int firstResult = (page - 1) * pageSize;
-
+    public List<Member> findSuggestMembers() {
         return em.createQuery("SELECT m FROM Member m WHERE m.status = :status ORDER BY m.priority DESC", Member.class)
                 .setParameter("status", StatusEnum.PUBLIC)
-                .setFirstResult(firstResult)
-                .setMaxResults(pageSize)
                 .getResultList();
     }
 }

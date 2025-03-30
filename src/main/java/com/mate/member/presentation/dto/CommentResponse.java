@@ -10,6 +10,7 @@ public class CommentResponse {
     public record FindComment(
             UUID id,
             String review,
+            Boolean editable,
             FindCommentMemberInfo reviewerInfo,
             FindCommentMemberInfo memberInfo
     ) {
@@ -19,7 +20,7 @@ public class CommentResponse {
                 String name
         ) {}
 
-        public static CommentResponse.FindComment toDto(Comment comment) {
+        public static CommentResponse.FindComment toDto(UUID memberId, Comment comment) {
             FindCommentMemberInfo review = FindCommentMemberInfo.builder()
                     .id(comment.getReviewer().getId())
                     .name(comment.getReviewer().getName())
@@ -30,11 +31,20 @@ public class CommentResponse {
                     .name(comment.getMember().getName())
                     .build();
 
+            boolean editable;
+
+            if(comment.getReviewer().getId().equals(memberId)) {
+                editable = true;
+            } else {
+                editable = false;
+            }
+
             return FindComment.builder()
                     .id(comment.getId())
                     .reviewerInfo(review)
                     .memberInfo(member)
                     .review(comment.getReview())
+                    .editable(editable)
                     .build();
         }
     }

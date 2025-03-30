@@ -51,11 +51,13 @@ public class CommentController {
     public ResponseEntity<List<CommentResponse.FindComment>> findCommentByLoggedInUser() {
         CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication()
                 .orElseThrow(() -> new AuthedException(UNAUTHORIZED_USER));
-        return ResponseEntity.ok().body(commentService.findCommentById(userInfo.getId()));
+        return ResponseEntity.ok().body(commentService.findCommentById(userInfo.getId(), userInfo.getId()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<List<CommentResponse.FindComment>> findCommentById(@PathVariable("id") UUID targetId) {
-        return ResponseEntity.ok().body(commentService.findCommentById(targetId));
+        CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication()
+                .orElseThrow(() -> new AuthedException(UNAUTHORIZED_USER));
+        return ResponseEntity.ok().body(commentService.findCommentById(userInfo.getId(), targetId));
     }
 }

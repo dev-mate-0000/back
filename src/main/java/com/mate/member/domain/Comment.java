@@ -1,5 +1,6 @@
 package com.mate.member.domain;
 
+import com.mate.config.BaseTime;
 import com.mate.member.presentation.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
+public class Comment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

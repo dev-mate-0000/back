@@ -30,8 +30,8 @@ public class MemberService {
         return MemberResponse.FindMember.toDto(member, skills);
     }
 
-    public List<MemberResponse.FindMember> suggestMembers(int page) {
-        List<Member> members = memberRepository.findSuggestMembers(page);
+    public List<MemberResponse.FindMember> suggestMembers() {
+        List<Member> members = memberRepository.findSuggestMembers();
         return members.stream().map(member -> {
             List<Skill> skills = skillRepository.findByMemberId(member.getId());
             return MemberResponse.FindMember.toDto(member, skills);
