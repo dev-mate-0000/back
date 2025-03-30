@@ -58,7 +58,7 @@ public class Member {
      * @param bio
      * @param status
      */
-    public void patchMember(JobsEnum job, String bio, StatusEnum status) {
+    public void patch(JobsEnum job, String bio, StatusEnum status) {
         if(job != null) {
             this.job = job;
         }

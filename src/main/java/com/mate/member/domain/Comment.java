@@ -21,11 +21,11 @@ public class Comment {
 
     private String review;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "reviewer_id")
     private Member reviewer;
 
@@ -33,4 +33,8 @@ public class Comment {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private StatusEnum status = StatusEnum.PUBLIC;
+
+    public void patch(String review) {
+        this.review = review;
+    }
 }

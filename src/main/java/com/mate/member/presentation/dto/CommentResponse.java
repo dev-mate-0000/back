@@ -8,9 +8,10 @@ import java.util.UUID;
 public class CommentResponse {
     @Builder
     public record FindComment(
+            UUID id,
+            String review,
             FindCommentMemberInfo reviewerInfo,
-            FindCommentMemberInfo memberInfo,
-            String review
+            FindCommentMemberInfo memberInfo
     ) {
         @Builder
         private record FindCommentMemberInfo(
@@ -30,6 +31,7 @@ public class CommentResponse {
                     .build();
 
             return FindComment.builder()
+                    .id(comment.getId())
                     .reviewerInfo(review)
                     .memberInfo(member)
                     .review(comment.getReview())

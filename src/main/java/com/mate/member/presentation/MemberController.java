@@ -46,7 +46,7 @@ public class MemberController {
     }
 
     @PatchMapping("/self")
-    public ResponseEntity<Void> patchMemberByLoggedInUser(@RequestBody @Valid MemberRequest.PatchMember dto) {
+    public ResponseEntity<Void> patchMemberByLoggedInUser(@Valid @RequestBody MemberRequest.PatchMember dto) {
         CustomOAuthUser userInfo = SecurityUtil.getMemberIdByAuthentication()
                 .orElseThrow(() -> new AuthedException(UNAUTHORIZED_USER));
         memberService.patchMemberBySelf(userInfo.getId(), dto);
