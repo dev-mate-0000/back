@@ -63,7 +63,8 @@ public class OAuthLoginController {
 
         OAuthMemberResponse.OAuthFindMember member = oAuthLoginService.saveMember(oAuthResponse);
         onSuccess(member, response);
-        response.sendRedirect(REDIRECT_URL);
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().write("<script>window.close();</script>");
     }
 
     private void onSuccess(OAuthMemberResponse.OAuthFindMember member, HttpServletResponse response) {
