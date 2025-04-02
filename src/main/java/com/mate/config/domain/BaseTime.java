@@ -1,4 +1,4 @@
-package com.mate.config;
+package com.mate.config.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

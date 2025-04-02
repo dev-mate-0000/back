@@ -1,6 +1,6 @@
 package com.mate.member.domain;
 
-import com.mate.config.BaseTime;
+import com.mate.config.domain.BaseTime;
 import com.mate.member.presentation.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

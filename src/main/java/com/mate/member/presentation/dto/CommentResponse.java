@@ -3,6 +3,7 @@ package com.mate.member.presentation.dto;
 import com.mate.member.domain.Comment;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class CommentResponse {
@@ -11,6 +12,10 @@ public class CommentResponse {
             UUID id,
             String review,
             Boolean editable,
+
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
+
             FindCommentMemberInfo reviewerInfo,
             FindCommentMemberInfo memberInfo
     ) {
@@ -42,6 +47,10 @@ public class CommentResponse {
             return FindComment.builder()
                     .id(comment.getId())
                     .reviewerInfo(review)
+
+                    .createdAt(comment.getCreatedAt())
+                    .updatedAt(comment.getUpdatedAt())
+
                     .memberInfo(member)
                     .review(comment.getReview())
                     .editable(editable)
