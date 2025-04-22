@@ -1,6 +1,5 @@
 package com.mate.security.presentation;
 
-import com.mate.config.exception.custom.AuthedException;
 import com.mate.security.JwtUtil;
 import com.mate.security.SecurityUtil;
 import com.mate.security.application.OAuthLoginService;

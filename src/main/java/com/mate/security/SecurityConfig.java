@@ -33,7 +33,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/members/**").authenticated()
+                        .requestMatchers("/members/self").authenticated()
+                        .requestMatchers("/members/comments/**").authenticated()
                         .anyRequest().permitAll()
                 )
 
